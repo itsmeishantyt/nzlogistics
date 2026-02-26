@@ -1,0 +1,582 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Apply Now — N&Z Logistics LLC</title>
+    <link rel="icon" href="/logo.svg">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Syne:wght@700;800&display=swap"
+        rel="stylesheet">
+    <style>
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        :root {
+            --bg: #050505;
+            --surface: #0f0f0f;
+            --surface2: #1a1a1a;
+            --border: #1f1f1f;
+            --border-strong: #333;
+            --text: #f2f2f2;
+            --muted: #666;
+            --glow: rgba(255, 255, 255, 0.12);
+        }
+
+        html,
+        body {
+            height: 100%;
+            background: var(--bg);
+            color: var(--text);
+            font-family: 'Inter', sans-serif;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* ── Progress bar ─────────────────────── */
+        #progress-bar-track {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: var(--border);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        #progress-bar-fill {
+            height: 100%;
+            background: #fff;
+            width: 0%;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 0 12px rgba(255, 255, 255, 0.5), 0 0 40px rgba(255, 255, 255, 0.15);
+        }
+
+        /* ── Step counter (top-right) ─────────── */
+        #step-counter {
+            position: fixed;
+            top: 1.25rem;
+            right: 1.5rem;
+            font-size: 0.75rem;
+            font-weight: 600;
+            letter-spacing: 0.08em;
+            color: var(--muted);
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        /* ── Nav arrow controls ─────────────── */
+        #controls {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 100;
+            opacity: 0;
+            transition: opacity 0.4s;
+        }
+
+        .nav-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            border: 1px solid var(--border-strong);
+            background: var(--surface2);
+            color: var(--text);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+        }
+
+        .nav-btn:hover:not(:disabled) {
+            background: var(--surface);
+            border-color: #555;
+            box-shadow: 0 0 16px var(--glow);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.25;
+            cursor: not-allowed;
+        }
+
+        /* ── Full-screen single-question view ── */
+        #single-view {
+            position: fixed;
+            inset: 0;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #single-view.active {
+            display: flex;
+        }
+
+        .single-step {
+            width: 100%;
+            max-width: 680px;
+            padding: 2rem 1.5rem;
+            position: absolute;
+        }
+
+        /* ── Google-form style scrollable page ── */
+        #page-view {
+            display: none;
+            min-height: 100vh;
+            padding: 5rem 1.5rem 8rem;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        #page-view.active {
+            display: flex;
+        }
+
+        #page-form {
+            width: 100%;
+            max-width: 680px;
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        /* ── Shared form card (for page-view questions) */
+        .form-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 2rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+
+        .form-card:focus-within {
+            border-color: var(--border-strong);
+            box-shadow: 0 0 30px rgba(255, 255, 255, 0.04);
+        }
+
+        /* ── Shared inputs ───────────────────── */
+        .q-label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 0.12em;
+            text-transform: uppercase;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .q-label .q-num {
+            font-size: 0.6rem;
+            background: var(--surface2);
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            padding: 0.15rem 0.4rem;
+        }
+
+        /* Typeform-style huge input */
+        .single-input {
+            display: block;
+            width: 100%;
+            background: transparent;
+            border: none;
+            border-bottom: 1.5px solid var(--border-strong);
+            color: var(--text);
+            font-size: clamp(1.75rem, 5vw, 3.5rem);
+            font-weight: 700;
+            font-family: 'Syne', 'Inter', sans-serif;
+            letter-spacing: -0.02em;
+            padding: 0.5rem 0 1rem;
+            outline: none;
+            transition: border-color 0.2s;
+            caret-color: #fff;
+        }
+
+        .single-input::placeholder {
+            color: var(--border-strong);
+        }
+
+        .single-input:focus {
+            border-color: #fff;
+            box-shadow: 0 2px 0 rgba(255, 255, 255, 0.3);
+        }
+
+        /* Google-form style normal input */
+        .page-input {
+            display: block;
+            width: 100%;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 12px;
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.875rem 1rem;
+            outline: none;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .page-input::placeholder {
+            color: var(--muted);
+        }
+
+        .page-input:focus {
+            border-color: var(--border-strong);
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.05);
+        }
+
+        select.page-input {
+            cursor: pointer;
+        }
+
+        /* ── Option buttons ──────────────────── */
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .option-btn {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            text-align: left;
+            background: var(--surface2);
+            border: 1.5px solid var(--border);
+            border-radius: 14px;
+            color: var(--text);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 0.875rem 1.25rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+            width: 100%;
+        }
+
+        .option-btn:hover {
+            border-color: var(--border-strong);
+            background: var(--surface);
+        }
+
+        .option-btn.selected {
+            border-color: #fff;
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 20px rgba(255, 255, 255, 0.06);
+        }
+
+        .option-num {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: var(--muted);
+            background: var(--surface);
+            border: 1px solid var(--border-strong);
+            border-radius: 6px;
+            width: 22px;
+            height: 22px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .option-btn.selected .option-num {
+            border-color: #fff;
+            color: #fff;
+        }
+
+        /* ── Buttons ─────────────────────────── */
+        .btn-white {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: #fff;
+            color: #000;
+            font-size: 1rem;
+            font-weight: 700;
+            padding: 0.875rem 2rem;
+            border-radius: 999px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.25s;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 0 0 0 rgba(255, 255, 255, 0);
+        }
+
+        .btn-white:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 0 40px rgba(255, 255, 255, 0.25), 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .btn-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: transparent;
+            color: var(--muted);
+            font-size: 0.875rem;
+            font-weight: 600;
+            padding: 0.75rem 1.5rem;
+            border-radius: 999px;
+            border: 1.5px solid var(--border-strong);
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: 'Inter', sans-serif;
+        }
+
+        .btn-ghost:hover {
+            color: var(--text);
+            border-color: #555;
+            box-shadow: 0 0 16px var(--glow);
+        }
+
+        /* ── Key hint ────────────────────────── */
+        .key-hint {
+            display: flex;
+            align-items: center;
+            gap: 0.375rem;
+            font-size: 0.725rem;
+            color: var(--muted);
+            margin-top: 0.875rem;
+        }
+
+        kbd {
+            background: var(--surface2);
+            border: 1px solid var(--border-strong);
+            border-radius: 4px;
+            padding: 0.15rem 0.4rem;
+            font-size: 0.7rem;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* ── Error ───────────────────────────── */
+        .error-msg {
+            font-size: 0.8rem;
+            color: #f87171;
+            height: 1.25rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+            margin-top: 0.5rem;
+        }
+
+        .error-msg.show {
+            opacity: 1;
+        }
+
+        /* ── Heading for single view ─────────── */
+        .single-title {
+            font-family: 'Syne', 'Inter', sans-serif;
+            font-size: clamp(1.75rem, 5vw, 3.5rem);
+            font-weight: 800;
+            letter-spacing: -0.035em;
+            line-height: 1.1;
+            margin-bottom: 2rem;
+            color: var(--text);
+        }
+
+        /* ── Page view question title ─────────── */
+        .page-q-title {
+            font-size: 1.05rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 1rem;
+            line-height: 1.4;
+        }
+
+        /* ── Welcome / Success screens ─────── */
+        .welcome-screen,
+        .success-screen {
+            width: 100%;
+            max-width: 680px;
+            padding: 0 1.5rem;
+        }
+
+        /* ── Transition animations ────────────  */
+        .slide-enter-up {
+            animation: slideEnterUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .slide-enter-down {
+            animation: slideEnterDown 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .slide-exit-up {
+            animation: slideExitUp 0.35s ease forwards;
+        }
+
+        .slide-exit-down {
+            animation: slideExitDown 0.35s ease forwards;
+        }
+
+        @keyframes slideEnterUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideEnterDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideExitUp {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+        }
+
+        @keyframes slideExitDown {
+            from {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+            to {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+        }
+
+        /* ── Page view: slide entire page ─────  */
+        .page-slide-enter {
+            animation: slideEnterUp 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards;
+        }
+
+        .page-slide-exit {
+            animation: slideExitUp 0.35s ease forwards;
+        }
+
+        /* ── Loading spinner ──────────────────  */
+        .spinner {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            border: 2px solid var(--border-strong);
+            border-top-color: #fff;
+            animation: spin 0.7s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ── Submit button bar (page-view) ────  */
+        #page-submit-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, var(--bg) 70%, transparent);
+            padding: 1.5rem;
+            display: none;
+            justify-content: center;
+            gap: 1rem;
+            z-index: 50;
+        }
+
+        #page-submit-bar.active {
+            display: flex;
+        }
+
+        /* ── Glow ambient ─────────────────── */
+        .ambient-glow {
+            position: fixed;
+            top: -20%;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 600px;
+            height: 400px;
+            border-radius: 50%;
+            background: radial-gradient(ellipse, rgba(255, 255, 255, 0.025) 0%, transparent 70%);
+            pointer-events: none;
+            z-index: 0;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Ambient glow -->
+    <div class="ambient-glow"></div>
+
+    <!-- Progress bar -->
+    <div id="progress-bar-track">
+        <div id="progress-bar-fill"></div>
+    </div>
+
+    <!-- Step counter -->
+    <div id="step-counter"></div>
+
+    <!-- Single-question view (Typeform style) -->
+    <div id="single-view"></div>
+
+    <!-- Full-page view (Google Form style) -->
+    <div id="page-view">
+        <form id="page-form" novalidate></form>
+    </div>
+
+    <!-- Page-view submit button bar -->
+    <div id="page-submit-bar">
+        <button class="btn-ghost" type="button" id="page-back-btn" style="display:none">← Back</button>
+        <button class="btn-white" type="button" id="page-next-btn">
+            Continue
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+            </svg>
+        </button>
+    </div>
+
+    <!-- Single-view nav arrows -->
+    <div id="controls">
+        <button id="btn-up" class="nav-btn" aria-label="Previous" disabled>
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M18 15l-6-6-6 6" />
+            </svg>
+        </button>
+        <button id="btn-down" class="nav-btn" aria-label="Next">
+            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M6 9l6 6 6-6" />
+            </svg>
+        </button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,721 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin — Form Builder — N&Z Logistics</title>
+    <link rel="icon" href="../logo.svg">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Syne:wght@700;800&display=swap');
+
+        *,
+        *::before,
+        *::after {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0
+        }
+
+        :root {
+            --bg: #0a0a0a;
+            --surface: #111;
+            --surface2: #1a1a1a;
+            --surface3: #222;
+            --border: #222;
+            --border-strong: #333;
+            --text: #f2f2f2;
+            --muted: #777;
+            --accent: #fff;
+            --danger: #f87171;
+            --success: #34d399
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg);
+            color: var(--text);
+            min-height: 100vh;
+            line-height: 1.5
+        }
+
+        a {
+            color: var(--text);
+            text-decoration: none
+        }
+
+        /* ── Login ─────────────────────────── */
+        .login-wrap {
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1rem
+        }
+
+        .login-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 1rem;
+            padding: 2.5rem;
+            max-width: 24rem;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5)
+        }
+
+        .login-card .icon {
+            width: 4rem;
+            height: 4rem;
+            border-radius: 50%;
+            background: var(--surface3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 1.5rem
+        }
+
+        .login-card h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem
+        }
+
+        .login-card p {
+            font-size: 0.875rem;
+            color: var(--muted);
+            margin-bottom: 1.5rem
+        }
+
+        .login-card input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 0.5rem;
+            color: var(--text);
+            font-size: 0.875rem;
+            outline: none;
+            transition: border-color 0.2s
+        }
+
+        .login-card input:focus {
+            border-color: var(--border-strong)
+        }
+
+        .login-card button {
+            width: 100%;
+            margin-top: 1rem;
+            padding: 0.75rem;
+            background: var(--accent);
+            color: #000;
+            font-weight: 600;
+            border: none;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: opacity 0.2s
+        }
+
+        .login-card button:hover {
+            opacity: 0.9
+        }
+
+        .login-error {
+            color: var(--danger);
+            font-size: 0.8rem;
+            margin-top: 0.75rem;
+            display: none
+        }
+
+        /* ── Top bar ───────────────────────── */
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            padding: 1.5rem 2rem;
+            border-bottom: 1px solid var(--border)
+        }
+
+        .topbar h1 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            letter-spacing: -0.02em
+        }
+
+        .topbar p {
+            color: var(--muted);
+            font-size: 0.875rem
+        }
+
+        .topbar-actions {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            flex-wrap: wrap
+        }
+
+        /* ── Buttons ───────────────────────── */
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.5rem;
+            font-size: 0.8125rem;
+            font-weight: 600;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s
+        }
+
+        .btn-white {
+            background: var(--accent);
+            color: #000
+        }
+
+        .btn-white:hover {
+            opacity: 0.9
+        }
+
+        .btn-outline {
+            background: transparent;
+            color: var(--text);
+            border: 1px solid var(--border-strong)
+        }
+
+        .btn-outline:hover {
+            background: var(--surface2);
+            border-color: var(--muted)
+        }
+
+        .btn-ghost {
+            background: transparent;
+            color: var(--muted);
+            border: 1px solid var(--border)
+        }
+
+        .btn-ghost:hover {
+            color: var(--text);
+            border-color: var(--border-strong)
+        }
+
+        .btn-danger {
+            background: transparent;
+            color: var(--danger);
+            padding: 0.5rem;
+            border-radius: 0.5rem;
+            border: none;
+            cursor: pointer;
+            transition: all 0.2s
+        }
+
+        .btn-danger:hover {
+            background: rgba(248, 113, 113, 0.1)
+        }
+
+        /* ── Status message ────────────────── */
+        .toast {
+            font-size: 0.8rem;
+            padding: 0.375rem 0.75rem;
+            border-radius: 0.375rem;
+            display: none
+        }
+
+        .toast.success {
+            display: inline-block;
+            background: rgba(52, 211, 153, 0.1);
+            color: var(--success)
+        }
+
+        .toast.error {
+            display: inline-block;
+            background: rgba(248, 113, 113, 0.1);
+            color: var(--danger)
+        }
+
+        /* ── Question card ─────────────────── */
+        .questions {
+            padding: 1.5rem 2rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem
+        }
+
+        .q-card {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            transition: border-color 0.2s
+        }
+
+        .q-card:hover {
+            border-color: var(--border-strong)
+        }
+
+        .q-inner {
+            display: flex;
+            gap: 1rem;
+            align-items: flex-start
+        }
+
+        .q-reorder {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem;
+            margin-top: 0.125rem
+        }
+
+        .q-reorder button {
+            background: transparent;
+            border: none;
+            color: var(--muted);
+            cursor: pointer;
+            padding: 0.25rem;
+            transition: color 0.2s
+        }
+
+        .q-reorder button:hover:not(:disabled) {
+            color: var(--text)
+        }
+
+        .q-reorder button:disabled {
+            opacity: 0.2;
+            cursor: default
+        }
+
+        .q-fields {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.75rem
+        }
+
+        .q-fields.full {
+            grid-template-columns: 1fr
+        }
+
+        .field {
+            display: flex;
+            flex-direction: column;
+            gap: 0.25rem
+        }
+
+        .field.span-2 {
+            grid-column: 1/-1
+        }
+
+        .field label {
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--muted)
+        }
+
+        .field input,
+        .field select {
+            padding: 0.5rem 0.75rem;
+            background: var(--surface2);
+            border: 1px solid var(--border);
+            border-radius: 0.375rem;
+            color: var(--text);
+            font-size: 0.8125rem;
+            font-family: inherit;
+            outline: none;
+            transition: border-color 0.2s
+        }
+
+        .field input:focus,
+        .field select:focus {
+            border-color: var(--border-strong)
+        }
+
+        .field select {
+            cursor: pointer
+        }
+
+        .q-right {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+            align-items: flex-end
+        }
+
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8125rem;
+            color: var(--muted)
+        }
+
+        .checkbox-row input {
+            width: 1rem;
+            height: 1rem;
+            accent-color: var(--accent)
+        }
+
+        /* ── Empty state ───────────────────── */
+        .empty {
+            text-align: center;
+            padding: 3rem;
+            background: var(--surface);
+            border: 1px dashed var(--border);
+            border-radius: 0.75rem;
+            margin: 1.5rem 2rem
+        }
+
+        .empty p {
+            color: var(--muted);
+            margin-bottom: 1rem
+        }
+
+        .empty button {
+            color: var(--muted);
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem
+        }
+
+        .empty button:hover {
+            color: var(--text)
+        }
+
+        /* ── Add button ────────────────────── */
+        .add-row {
+            text-align: center;
+            padding: 1rem 2rem 3rem
+        }
+
+        .field-hint {
+            font-size: 0.7rem;
+            color: var(--muted);
+            margin-top: 0.125rem
+        }
+
+        @media(max-width:768px) {
+            .topbar {
+                padding: 1rem
+            }
+
+            .questions {
+                padding: 1rem
+            }
+
+            .q-fields {
+                grid-template-columns: 1fr
+            }
+
+            .q-inner {
+                flex-direction: column
+            }
+
+            .q-right {
+                flex-direction: row;
+                width: 100%
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- ═══ Login Screen ═══ -->
+    <div id="login-screen" class="login-wrap">
+        <div class="login-card">
+            <div class="icon">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4" />
+                    <polyline points="10 17 15 12 10 7" />
+                    <line x1="15" y1="12" x2="3" y2="12" />
+                </svg>
+            </div>
+            <h1>Admin Panel</h1>
+            <p>Enter password to configure the application form.</p>
+            <form id="login-form">
+                <input type="password" id="login-pass" placeholder="Admin password" required>
+                <button type="submit">Log In</button>
+            </form>
+            <p class="login-error" id="login-error">Invalid password. Please try again.</p>
+        </div>
+    </div>
+
+    <!-- ═══ Form Builder ═══ -->
+    <div id="builder-screen" style="display:none">
+        <div class="topbar">
+            <div>
+                <h1>Application Form Builder</h1>
+                <p>Configure questions, types, and validation rules for the Typeform-like flow.</p>
+            </div>
+            <div class="topbar-actions">
+                <span class="toast" id="toast"></span>
+                <a href="applications.html" class="btn btn-outline">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" />
+                        <polyline points="14 2 14 8 20 8" />
+                        <line x1="16" y1="13" x2="8" y2="13" />
+                        <line x1="16" y1="17" x2="8" y2="17" />
+                    </svg>
+                    View Submissions
+                </a>
+                <button class="btn btn-white" id="save-btn" onclick="saveConfig()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                    </svg>
+                    Save Configuration
+                </button>
+            </div>
+        </div>
+
+        <div class="questions" id="questions-container">
+            <!-- Questions rendered by JS -->
+        </div>
+
+        <div class="empty" id="empty-state" style="display:none">
+            <p>No questions configured yet.</p>
+            <button onclick="addQuestion()">+ Add First Question</button>
+        </div>
+
+        <div class="add-row">
+            <button class="btn btn-ghost" onclick="addQuestion()">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <line x1="12" y1="5" x2="12" y2="19" />
+                    <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add New Question
+            </button>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = '../api';
+        let config = [];
+        let password = '';
+
+        // ── Login ──────────────────────────────
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            password = document.getElementById('login-pass').value;
+            if (!password) return;
+
+            try {
+                const res = await fetch(`${API_BASE}/login.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password })
+                });
+                const data = await res.json();
+
+                if (res.ok && data.token) {
+                    localStorage.setItem('admin_token', data.token);
+                    document.getElementById('login-screen').style.display = 'none';
+                    document.getElementById('builder-screen').style.display = 'block';
+                    await fetchConfig();
+                } else {
+                    showLoginError(data.error || 'Invalid password');
+                }
+            } catch (err) {
+                showLoginError('Network error. Please try again.');
+            }
+        });
+
+        function showLoginError(msg) {
+            const el = document.getElementById('login-error');
+            el.textContent = msg;
+            el.style.display = 'block';
+        }
+
+        // ── Check existing session ─────────────
+        (function checkSession() {
+            const token = localStorage.getItem('admin_token');
+            if (token) {
+                document.getElementById('login-screen').style.display = 'none';
+                document.getElementById('builder-screen').style.display = 'block';
+                fetchConfig();
+            }
+        })();
+
+        // ── Fetch config ───────────────────────
+        async function fetchConfig() {
+            try {
+                const res = await fetch(`${API_BASE}/form-config.php`);
+                if (res.ok) {
+                    config = await res.json();
+                    renderQuestions();
+                }
+            } catch (err) {
+                console.error('Failed to fetch config', err);
+            }
+        }
+
+        // ── Save config ────────────────────────
+        async function saveConfig() {
+            const btn = document.getElementById('save-btn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/></svg> Saving…';
+
+            try {
+                const res = await fetch(`${API_BASE}/form-config.php`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ password, config })
+                });
+                const data = await res.json();
+
+                if (res.ok) {
+                    showToast('Configuration saved successfully!', 'success');
+                } else {
+                    showToast(data.error || 'Failed to save', 'error');
+                }
+            } catch (err) {
+                showToast('Network error saving configuration', 'error');
+            } finally {
+                btn.disabled = false;
+                btn.innerHTML = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg> Save Configuration';
+            }
+        }
+
+        function showToast(msg, type) {
+            const el = document.getElementById('toast');
+            el.textContent = msg;
+            el.className = `toast ${type}`;
+            setTimeout(() => { el.className = 'toast'; }, 3000);
+        }
+
+        // ── Render all questions ───────────────
+        function renderQuestions() {
+            const container = document.getElementById('questions-container');
+            const empty = document.getElementById('empty-state');
+
+            if (config.length === 0) {
+                container.innerHTML = '';
+                empty.style.display = 'block';
+                return;
+            }
+
+            empty.style.display = 'none';
+            container.innerHTML = config.map((q, i) => `
+    <div class="q-card" data-index="${i}">
+      <div class="q-inner">
+        <div class="q-reorder">
+          <button onclick="moveUp(${i})" ${i === 0 ? 'disabled' : ''} title="Move up">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 15l-6-6-6 6"/></svg>
+          </button>
+          <button onclick="moveDown(${i})" ${i === config.length - 1 ? 'disabled' : ''} title="Move down">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 9l6 6 6-6"/></svg>
+          </button>
+        </div>
+        <div class="q-fields">
+          <div class="field span-2">
+            <label>Question Title</label>
+            <input type="text" value="${esc(q.title || '')}" onchange="updateQ(${i},'title',this.value)">
+          </div>
+          <div class="field">
+            <label>Internal ID</label>
+            <input type="text" value="${esc(q.id || '')}" onchange="updateQ(${i},'id',this.value)">
+          </div>
+          <div class="field">
+            <label>Placeholder</label>
+            <input type="text" value="${esc(q.placeholder || '')}" onchange="updateQ(${i},'placeholder',this.value)" ${q.type === 'options' ? 'disabled' : ''}>
+          </div>
+          <div class="field">
+            <label>Input Type</label>
+            <select onchange="updateQ(${i},'type',this.value)">
+              <option value="text" ${q.type === 'text' ? 'selected' : ''}>Short Text</option>
+              <option value="email" ${q.type === 'email' ? 'selected' : ''}>Email</option>
+              <option value="tel" ${q.type === 'tel' ? 'selected' : ''}>Phone Number</option>
+              <option value="number" ${q.type === 'number' ? 'selected' : ''}>Number</option>
+              <option value="options" ${q.type === 'options' ? 'selected' : ''}>Multiple Choice</option>
+            </select>
+          </div>
+          <div class="field">
+            <label>Layout Mode</label>
+            <select onchange="updateQ(${i},'display_mode',this.value)">
+              <option value="single" ${(q.display_mode || 'single') === 'single' ? 'selected' : ''}>Single (Typeform)</option>
+              <option value="page" ${q.display_mode === 'page' ? 'selected' : ''}>Page (Google Form)</option>
+            </select>
+            <span class="field-hint">Consecutive "Page" questions are grouped together.</span>
+          </div>
+          ${q.type === 'options' ? `
+          <div class="field span-2">
+            <label>Options (comma separated)</label>
+            <input type="text" value="${esc((q.options || []).join(', '))}" onchange="updateOptions(${i},this.value)" placeholder="Option 1, Option 2, Option 3">
+          </div>
+          ` : ''}
+          <div class="field span-2">
+            <label>Error Message</label>
+            <input type="text" value="${esc(q.errorMessage || '')}" onchange="updateQ(${i},'errorMessage',this.value)">
+          </div>
+          <div class="checkbox-row">
+            <input type="checkbox" id="req-${i}" ${q.required ? 'checked' : ''} onchange="updateQ(${i},'required',this.checked)">
+            <label for="req-${i}">Required field</label>
+          </div>
+        </div>
+        <div class="q-right">
+          <button class="btn-danger" onclick="removeQuestion(${i})" title="Delete Question">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  `).join('');
+        }
+
+        // ── CRUD helpers ───────────────────────
+        function addQuestion() {
+            config.push({
+                id: 'q_' + Date.now(),
+                type: 'text',
+                title: 'New Question',
+                placeholder: '',
+                required: true,
+                display_mode: 'single',
+                errorMessage: 'Please answer this question.'
+            });
+            renderQuestions();
+        }
+
+        function removeQuestion(i) {
+            config.splice(i, 1);
+            renderQuestions();
+        }
+
+        function updateQ(i, field, value) {
+            config[i][field] = value;
+            if (field === 'type') renderQuestions(); // re-render to show/hide options field
+        }
+
+        function updateOptions(i, str) {
+            config[i].options = str.split(',').map(s => s.trim()).filter(Boolean);
+        }
+
+        function moveUp(i) {
+            if (i === 0) return;
+            [config[i], config[i - 1]] = [config[i - 1], config[i]];
+            renderQuestions();
+        }
+
+        function moveDown(i) {
+            if (i === config.length - 1) return;
+            [config[i], config[i + 1]] = [config[i + 1], config[i]];
+            renderQuestions();
+        }
+
+        function esc(s) {
+            return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
+        }
+    </script>
+</body>
+
+</html>
