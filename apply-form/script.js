@@ -1,4 +1,4 @@
-/**
+﻿/**
  * N&Z Logistics — Apply Form Engine
  * Supports two layout modes per question:
  *   display_mode: 'single'  → Typeform-style, one question full-screen
@@ -37,7 +37,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     try {
         const res = await fetch('../api/form-config.php');
         if (!res.ok) throw new Error('Config load failed');
-        const config = await res.json();
+        let config = await res.json();
+
+        // Fallback: if no questions are configured in the DB, use defaults
+        if (!Array.isArray(config) || config.length === 0) {
+            config = [
+                { id: 'full_name', type: 'text', display_mode: 'single', title: 'What is your full name?', placeholder: 'Jane Smith', required: true, errorMessage: 'Please enter your full name.' },
+                { id: 'email', type: 'email', display_mode: 'single', title: 'What is your email address?', placeholder: 'jane@example.com', required: true, errorMessage: 'Please enter a valid email.' },
+                { id: 'phone', type: 'tel', display_mode: 'single', title: 'What is your phone number?', placeholder: '(555) 000-0000', required: true, errorMessage: 'Please enter a valid phone number.' },
+                { id: 'position', type: 'options', display_mode: 'single', title: 'Which position are you applying for?', options: ['OTR Truck Driver (Class A CDL)', 'Local Delivery Driver', 'Warehouse & Logistics Associate', 'Dispatch Coordinator'], required: true, errorMessage: 'Please select a position.' },
+                { id: 'cdl', type: 'options', display_mode: 'single', title: 'Do you have a valid CDL?', options: ['Yes — Class A', 'Yes — Class B', 'No, but I am willing to train', 'No'], required: true },
+                { id: 'experience', type: 'number', display_mode: 'page', title: 'Years of driving or logistics experience?', placeholder: '0', required: false },
+                { id: 'city', type: 'text', display_mode: 'page', title: 'What city and state are you based in?', placeholder: 'Dallas, TX', required: true },
+                { id: 'availability', type: 'options', display_mode: 'single', title: 'When can you start?', options: ['Immediately', 'Within 2 weeks', 'Within 1 month', 'More than 1 month'], required: true },
+                { id: "message", type: "text", display_mode: "page", title: "Anything else you'd like us to know? (optional)", placeholder: "Tell us a bit about yourself...", required: false }
+            ];
+        }
 
         // Build flat flow with welcome/success bookmarks
         const rawFlow = [
@@ -62,8 +77,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         bindGlobalEvents();
 
     } catch (err) {
-        console.error(err);
-        showError401();
+        console.error('Config fetch failed, using fallback:', err);
+
+        // Use fallback config if fetch fails completely
+        let config = [
+            { id: 'full_name', type: 'text', display_mode: 'single', title: 'What is your full name?', placeholder: 'Jane Smith', required: true, errorMessage: 'Please enter your full name.' },
+            { id: 'email', type: 'email', display_mode: 'single', title: 'What is your email address?', placeholder: 'jane@example.com', required: true, errorMessage: 'Please enter a valid email.' },
+            { id: 'phone', type: 'tel', display_mode: 'single', title: 'What is your phone number?', placeholder: '(555) 000-0000', required: true, errorMessage: 'Please enter a valid phone number.' },
+            { id: 'position', type: 'options', display_mode: 'single', title: 'Which position are you applying for?', options: ['OTR Truck Driver (Class A CDL)', 'Local Delivery Driver', 'Warehouse & Logistics Associate', 'Dispatch Coordinator'], required: true, errorMessage: 'Please select a position.' },
+            { id: 'cdl', type: 'options', display_mode: 'single', title: 'Do you have a valid CDL?', options: ['Yes — Class A', 'Yes — Class B', 'No, but I am willing to train', 'No'], required: true },
+            { id: 'experience', type: 'number', display_mode: 'page', title: 'Years of driving or logistics experience?', placeholder: '0', required: false },
+            { id: 'city', type: 'text', display_mode: 'page', title: 'What city and state are you based in?', placeholder: 'Dallas, TX', required: true },
+            { id: 'availability', type: 'options', display_mode: 'single', title: 'When can you start?', options: ['Immediately', 'Within 2 weeks', 'Within 1 month', 'More than 1 month'], required: true },
+            { id: "message", type: "text", display_mode: "page", title: "Anything else you'd like us to know? (optional)", placeholder: "Tell us a bit about yourself...", required: false }
+        ];
+
+        const rawFlow = [
+            { id: '__welcome__', type: 'welcome', title: 'Drive Your Future With Us', subtitle: 'Apply in a few steps. Fast, honest, and straightforward.', buttonText: 'Start Application' },
+            ...config,
+            { id: '__success__', type: 'success', title: 'Application Submitted!', subtitle: 'Our recruiting team will reach out within 3–5 business days.' }
+        ];
+
+        rawFlow.forEach(step => {
+            if (step.type === 'email' && !step.validation) step.validation = v => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
+            if (step.type === 'tel' && !step.validation) step.validation = v => v.replace(/\D/g, '').length >= 10;
+        });
+
+        state.segments = buildSegments(rawFlow);
+        state.segmentIndex = 0;
+        renderSegment(state.segmentIndex, 'enter-up');
+        bindGlobalEvents();
     }
 });
 

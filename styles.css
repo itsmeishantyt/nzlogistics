@@ -4,33 +4,33 @@
    CSS Custom Properties — Light & Dark Mode
    ══════════════════════════════════════════════════ */
 :root {
-  --color-primary: #ffffff;
-  --color-primary-dark: #e5e5e5;
-  --color-primary-glow: rgba(255, 255, 255, 0.35);
-  --color-accent-glow: rgba(200, 200, 220, 0.25);
-  --color-bg: #f8f8f8;
-  --color-surface: #ffffff;
-  --color-surface2: #f0f0f0;
-  --color-surface3: #e8e8e8;
-  --color-text: #0a0a0a;
-  --color-muted: #6b6b6b;
-  --color-border: #e0e0e0;
-  --color-border-strong: #b0b0b0;
+  --color-primary: #FFD700;
+  --color-primary-dark: #D4AF37;
+  --color-primary-glow: rgba(255, 215, 0, 0.35);
+  --color-accent-glow: rgba(255, 215, 0, 0.15);
+  --color-bg: #051024;
+  --color-surface: #0a1835;
+  --color-surface2: #12244a;
+  --color-surface3: #1b2e59;
+  --color-text: #FFD700;
+  --color-muted: #b89c00;
+  --color-border: #1b2e59;
+  --color-border-strong: #2c467a;
 }
 
 .dark {
-  --color-primary: #ffffff;
-  --color-primary-dark: #d4d4d4;
-  --color-primary-glow: rgba(255, 255, 255, 0.12);
-  --color-accent-glow: rgba(180, 180, 255, 0.08);
-  --color-bg: #050505;
-  --color-surface: #0f0f0f;
-  --color-surface2: #1a1a1a;
-  --color-surface3: #242424;
-  --color-text: #f2f2f2;
-  --color-muted: #888888;
-  --color-border: #1f1f1f;
-  --color-border-strong: #333333;
+  --color-primary: #FFD700;
+  --color-primary-dark: #D4AF37;
+  --color-primary-glow: rgba(255, 215, 0, 0.15);
+  --color-accent-glow: rgba(255, 215, 0, 0.08);
+  --color-bg: #051024;
+  --color-surface: #0a1835;
+  --color-surface2: #12244a;
+  --color-surface3: #1b2e59;
+  --color-text: #FFD700;
+  --color-muted: #b89c00;
+  --color-border: #1b2e59;
+  --color-border-strong: #2c467a;
 }
 
 /* ══════════════════════════════════════════════════
@@ -65,7 +65,7 @@ main {
 }
 
 ::selection {
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 215, 0, 0.18);
   color: var(--color-text);
 }
 
@@ -127,18 +127,18 @@ ol {
   letter-spacing: 0.14em;
 }
 
-.gradient-text {
-  background: linear-gradient(135deg, #333333 0%, #888888 50%, #333333 100%);
+.gradient-text,
+h1,
+h2,
+h3,
+.section-heading,
+.hero-sub,
+.quote-text {
+  background: linear-gradient(135deg, #FFF0A8 0%, #D4AF37 50%, #996515 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
-}
-
-.dark .gradient-text {
-  background: linear-gradient(135deg, #ffffff 0%, #a0a0a0 50%, #ffffff 100%);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  color: transparent;
 }
 
 .badge {
@@ -173,13 +173,13 @@ ol {
   font-size: 0.9375rem;
   font-family: inherit;
   transition: all 0.3s;
-  background: #ffffff;
-  color: #0a0a0a;
+  background: var(--color-primary);
+  color: var(--color-bg);
   border: none;
   cursor: pointer;
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
-    0 4px 20px rgba(255, 255, 255, 0.15),
+    0 0 0 1px rgba(255, 215, 0, 0.15) inset,
+    0 4px 20px rgba(255, 215, 0, 0.15),
     0 1px 4px rgba(0, 0, 0, 0.4);
   letter-spacing: -0.01em;
   text-decoration: none;
@@ -188,9 +188,9 @@ ol {
 .btn-primary:hover {
   transform: translateY(-2px);
   box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.15) inset,
-    0 0 40px rgba(255, 255, 255, 0.30),
-    0 8px 32px rgba(255, 255, 255, 0.12),
+    0 0 0 1px rgba(255, 215, 0, 0.15) inset,
+    0 0 40px rgba(255, 215, 0, 0.30),
+    0 8px 32px rgba(255, 215, 0, 0.12),
     0 2px 8px rgba(0, 0, 0, 0.5);
   filter: brightness(1.04);
 }
@@ -241,12 +241,12 @@ ol {
 }
 
 .card-hover:hover {
-  box-shadow: 0 0 40px rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 40px rgba(255, 215, 0, 0.04);
   transform: translateY(-2px);
 }
 
 .card-hover-sm:hover {
-  box-shadow: 0 0 30px rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 30px rgba(255, 215, 0, 0.04);
   transform: translateY(-2px);
 }
 
@@ -280,7 +280,7 @@ ol {
    Glow
    ══════════════════════════════════════════════════ */
 .glow-white {
-  box-shadow: 0 0 60px rgba(255, 255, 255, 0.08), 0 0 120px rgba(255, 255, 255, 0.04);
+  box-shadow: 0 0 60px rgba(255, 215, 0, 0.08), 0 0 120px rgba(255, 215, 0, 0.04);
 }
 
 /* ══════════════════════════════════════════════════
@@ -300,7 +300,7 @@ ol {
   backdrop-filter: blur(40px);
   -webkit-backdrop-filter: blur(40px);
   background: color-mix(in srgb, var(--color-bg) 80%, transparent);
-  box-shadow: 0 1px 40px rgba(255, 255, 255, 0.03);
+  box-shadow: 0 1px 40px rgba(255, 215, 0, 0.03);
 }
 
 .nav-inner {
@@ -331,7 +331,7 @@ ol {
 }
 
 .dark .nav-logo:hover img {
-  filter: invert(1) drop-shadow(0 0 12px rgba(255, 255, 255, 0.3));
+  filter: invert(1) drop-shadow(0 0 12px rgba(255, 215, 0, 0.3));
 }
 
 .nav-pill {
@@ -362,7 +362,7 @@ ol {
 }
 
 .nav-link.active {
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.06);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.06);
 }
 
 .nav-right {
@@ -490,7 +490,7 @@ ol {
   transform: translateX(-50%);
   width: 24rem;
   height: 1px;
-  background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.2), transparent);
+  background: linear-gradient(to right, transparent, rgba(255, 215, 0, 0.2), transparent);
 }
 
 .footer-inner {
@@ -513,7 +513,7 @@ ol {
 .footer-cta .inner-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.05), transparent 70%);
 }
 
 .footer-cols {
@@ -632,7 +632,7 @@ ol {
   width: 700px;
   height: 700px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(255, 215, 0, 0.05);
   filter: blur(100px);
 }
 
@@ -644,7 +644,7 @@ ol {
   width: 500px;
   height: 300px;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.04);
+  background: rgba(255, 215, 0, 0.04);
   filter: blur(80px);
 }
 
@@ -660,7 +660,7 @@ ol {
 .hero .glow-radial {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04) 0%, transparent 65%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.04) 0%, transparent 65%);
 }
 
 .hero-content {
@@ -682,7 +682,7 @@ ol {
   position: absolute;
   inset: 0;
   filter: blur(40px);
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(255, 215, 0, 0.1);
   border-radius: 50%;
   transform: scale(1.5);
 }
@@ -695,7 +695,7 @@ ol {
 }
 
 .dark .hero-logo-wrap img {
-  filter: invert(1) drop-shadow(0 0 40px rgba(255, 255, 255, 0.15));
+  filter: invert(1) drop-shadow(0 0 40px rgba(255, 215, 0, 0.15));
 }
 
 .hero-logo-wrap:hover img {
@@ -767,7 +767,7 @@ ol {
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #fff;
+  color: var(--color-bg);
   font-size: 0.75rem;
   font-weight: 700;
   margin-left: -0.5rem;
@@ -812,7 +812,7 @@ ol {
 }
 
 .stat-item:hover .stat-num {
-  filter: drop-shadow(0 0 12px rgba(255, 255, 255, 0.4));
+  filter: drop-shadow(0 0 12px rgba(255, 215, 0, 0.4));
 }
 
 .stat-label {
@@ -918,7 +918,7 @@ ol {
 
 .card:hover .icon-box {
   background: var(--color-surface2);
-  filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.2));
+  filter: drop-shadow(0 0 8px rgba(255, 215, 0, 0.2));
 }
 
 .icon-box-sm {
@@ -1036,7 +1036,7 @@ ol {
 .quote-section .quote-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.03), transparent 75%);
+  background: radial-gradient(ellipse at center, rgba(255, 215, 0, 0.03), transparent 75%);
 }
 
 .quote-text {
@@ -1074,7 +1074,7 @@ ol {
 .page-header .header-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.04), transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.04), transparent 70%);
   pointer-events: none;
 }
 
@@ -1184,7 +1184,7 @@ ol {
 }
 
 .card:hover .icon-wrap {
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.15));
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.15));
 }
 
 .contact-card .icon-wrap svg {
@@ -1211,7 +1211,7 @@ ol {
 }
 
 .contact-value a:hover {
-  filter: drop-shadow(0 0 6px rgba(255, 255, 255, 0.3));
+  filter: drop-shadow(0 0 6px rgba(255, 215, 0, 0.3));
 }
 
 .social-bar {
@@ -1237,7 +1237,7 @@ ol {
 .social-btn:hover {
   color: var(--color-text);
   border-color: var(--color-border-strong);
-  box-shadow: 0 0 12px rgba(255, 255, 255, 0.05);
+  box-shadow: 0 0 12px rgba(255, 215, 0, 0.05);
 }
 
 .social-btn svg {
@@ -1286,7 +1286,7 @@ ol {
 
 .faq-item[open] {
   border-color: var(--color-border-strong);
-  box-shadow: 0 0 20px rgba(255, 255, 255, 0.03);
+  box-shadow: 0 0 20px rgba(255, 215, 0, 0.03);
 }
 
 .faq-answer {
@@ -1365,7 +1365,7 @@ ol {
 .cta-card .cta-glow {
   position: absolute;
   inset: 0;
-  background: radial-gradient(ellipse at 50% 0%, rgba(255, 255, 255, 0.05), transparent 70%);
+  background: radial-gradient(ellipse at 50% 0%, rgba(255, 215, 0, 0.05), transparent 70%);
 }
 
 .cta-card .cta-inner {
