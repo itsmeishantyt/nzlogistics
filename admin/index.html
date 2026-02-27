@@ -537,12 +537,23 @@
         }
 
         // ── Check existing session ─────────────
-        (function checkSession() {
+        (async function checkSession() {
             const token = localStorage.getItem('admin_token');
             if (token) {
-                document.getElementById('login-screen').style.display = 'none';
-                document.getElementById('builder-screen').style.display = 'block';
-                fetchConfig();
+                try {
+                    const res = await fetch(`${API_BASE}/check-auth.php`, {
+                        headers: { 'Authorization': `Bearer ${token}` }
+                    });
+                    if (res.ok) {
+                        document.getElementById('login-screen').style.display = 'none';
+                        document.getElementById('builder-screen').style.display = 'block';
+                        fetchConfig();
+                        return;
+                    }
+                } catch (err) { }
+                // Token is invalid, expired, or server unreachable
+                localStorage.removeItem('admin_token');
+                showLoginError('Session expired. Please log in again.');
             }
         })();
 

@@ -14,6 +14,8 @@ $body = getJsonBody();
 $password = $body['password'] ?? '';
 
 if ($password !== ADMIN_PASSWORD) {
+    // Artificial delay to prevent brute-force attacks
+    sleep(1);
     jsonError('Invalid password', 401);
 }
 

@@ -515,7 +515,19 @@
     <div class="modal-overlay" id="detail-modal">
         <div class="modal">
             <button class="close-btn" onclick="closeDetail()">✕</button>
-            <h2 id="modal-title">Application Details</h2>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
+                <h2 id="modal-title" style="margin-bottom:0">Application Details</h2>
+                <button id="btn-download-word" class="btn btn-outline"
+                    style="padding:0.4rem 0.75rem;font-size:0.75rem;">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round" style="margin-right:0.25rem;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    Download to Word
+                </button>
+            </div>
             <div class="modal-fields" id="modal-fields"></div>
         </div>
     </div>
@@ -659,6 +671,8 @@
 
             document.getElementById('modal-title').textContent = `Application #${id}`;
             const fields = document.getElementById('modal-fields');
+            const downloadBtn = document.getElementById('btn-download-word');
+            downloadBtn.onclick = () => downloadWord(id);
 
             // Show status
             let html = `<div class="modal-field"><div class="mf-label">Status</div><div class="mf-value"><span class="status-badge status-${app.status}">${app.status}</span></div></div>`;
@@ -701,6 +715,59 @@
             el.textContent = msg;
             el.className = `toast ${type}`;
             setTimeout(() => { el.className = 'toast'; }, 2500);
+        }
+
+        // ── Download Word ──────────────────────
+        function downloadWord(id) {
+            const app = allApps.find(a => a.id === id);
+            if (!app) return;
+
+            let htmlDoc = '<html xmlns:o="urn:schemas-microsoft-com:office:office" xmlns:w="urn:schemas-microsoft-com:office:word" xmlns="http://www.w3.org/TR/REC-html40">';
+            htmlDoc += '<head><meta charset="utf-8"><title>Application</title>';
+            htmlDoc += '<!--[if gte mso 9]><xml><w:WordDocument><w:View>Print</w:View><w:Zoom>100</w:Zoom><w:DoNotOptimizeForBrowser/></w:WordDocument></xml><![endif]-->';
+            htmlDoc += '<style>';
+            htmlDoc += 'body { font-family: Arial, sans-serif; } ';
+            htmlDoc += 'table { width: 100%; border-collapse: collapse; margin-top: 10px; } ';
+            htmlDoc += 'th, td { border: 1px solid #ccc; padding: 8px; text-align: left; } ';
+            htmlDoc += 'th { background-color: #f2f2f2; width: 35%; } ';
+            htmlDoc += '</style></head><body>';
+
+            htmlDoc += `<h2>Application #${app.id}</h2>`;
+            htmlDoc += `<p><strong>Status:</strong> <span style="text-transform: capitalize;">${esc(app.status)}</span></p>`;
+            htmlDoc += `<p><strong>Submitted:</strong> ${formatDate(app.created_at)}</p>`;
+
+            htmlDoc += '<table><tbody>';
+
+            if (app.data && typeof app.data === 'object') {
+                for (const [key, value] of Object.entries(app.data)) {
+                    // Check if value is a filename path that should render as link
+                    let displayValue = String(value);
+                    if (displayValue.startsWith('/uploads/')) {
+                        // Attempt to make it a fully qualified URL for the Word Doc
+                        const fullUrl = window.location.origin + displayValue.replace('/uploads', '/api/uploads');
+                        displayValue = `<a href="${fullUrl}">${displayValue}</a>`;
+                    } else {
+                        displayValue = esc(displayValue);
+                    }
+                    htmlDoc += `<tr><th>${esc(key)}</th><td>${displayValue}</td></tr>`;
+                }
+            }
+
+            htmlDoc += '</tbody></table></body></html>';
+
+            // Create Blob and trigger download
+            const blob = new Blob(['\ufeff', htmlDoc], { type: 'application/msword;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            const applicantName = (app.first_name || app.last_name) ? `${app.first_name || ''}_${app.last_name || ''}`.trim() : `App_${app.id}`;
+            a.download = `NZ_Logistics_${applicantName}.doc`;
+
+            document.body.appendChild(a);
+            a.click();
+
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
     </script>
 </body>
