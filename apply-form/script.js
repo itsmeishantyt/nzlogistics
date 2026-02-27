@@ -42,42 +42,44 @@ document.addEventListener('DOMContentLoaded', async () => {
         // Fallback: if no questions are configured in the DB, use defaults
         if (!Array.isArray(config) || config.length === 0) {
             config = [
-                // Personal Information
-                { id: 'full_name', type: 'text', display_mode: 'single', title: 'What is your full name?', placeholder: 'Jane Smith', required: true, errorMessage: 'Please enter your full name.' },
-                { id: 'email', type: 'email', display_mode: 'single', title: 'What is your email address?', placeholder: 'jane@example.com', required: true, errorMessage: 'Please enter a valid email.' },
-                { id: 'phone', type: 'tel', display_mode: 'single', title: 'What is your phone number?', placeholder: '(555) 000-0000', required: true, errorMessage: 'Please enter a valid phone number.' },
-                // General Information
-                { id: 'position', type: 'select', display_mode: 'single', title: 'What position are you applying for?', options: ['Company Driver', 'Owner Operator', 'Fleet Owner', 'Driver for Owner Operator'], required: true, errorMessage: 'Please select a position.' },
-                { id: 'owner_operator_fleet', type: 'options', display_mode: 'single', title: 'If you answered "Owner Operator" or "Fleet Owner" above, select Yes.', options: ['Yes', 'No'], required: true },
-                { id: 'location', type: 'text', display_mode: 'single', title: 'What location are you applying for?', placeholder: 'City, State', required: false },
-                { id: 'us_eligible', type: 'options', display_mode: 'single', title: 'Are you legally eligible for employment in the United States?', options: ['Yes', 'No'], required: true },
-                { id: 'currently_employed', type: 'options', display_mode: 'single', title: 'Are you currently employed?', options: ['Yes', 'No'], required: true },
-                { id: 'speaks_english', type: 'options', display_mode: 'single', title: 'Do you read, write, and speak English?', options: ['Yes', 'No'], required: true },
-                { id: 'worked_before', type: 'options', display_mode: 'single', title: 'Have you ever worked for this company before?', options: ['Yes', 'No'], required: true },
-                { id: 'twic_card', type: 'options', display_mode: 'single', title: 'Do you have a current TWIC card?', options: ['Yes', 'No'], required: true },
-                { id: 'other_name', type: 'options', display_mode: 'single', title: 'Have you ever been known by any other name?', options: ['Yes', 'No'], required: true },
-                { id: 'referral_source', type: 'select', display_mode: 'single', title: 'How did you hear about us?', options: ['Driver Referral', 'Craigslist', 'Facebook', 'Driver Pulse', 'Newspaper', 'Web', 'Other'], required: false },
-                { id: 'driver_referral_name', type: 'text', display_mode: 'page', title: 'If "Driver Referral", please enter the driver\'s name', placeholder: 'Driver name...', required: false },
-                { id: 'referral_other', type: 'text', display_mode: 'page', title: 'If "Other", please explain how you heard about us', placeholder: 'Please explain...', required: false },
-                { id: 'fmcsa_clearinghouse', type: 'options', display_mode: 'single', title: 'Have you registered for the FMCSA Drug & Alcohol Clearinghouse?', options: ['Yes', 'No'], required: true },
-                // Driving Experience
-                { id: 'exp_straight_truck', type: 'select', display_mode: 'page', title: 'Straight Truck — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-                { id: 'exp_semi_trailer', type: 'select', display_mode: 'page', title: 'Tractor and Semi-Trailer — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-                { id: 'exp_two_trailers', type: 'select', display_mode: 'page', title: 'Tractor - Two Trailers — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-                { id: 'exp_other', type: 'text', display_mode: 'page', title: 'Other equipment experience (if any)', placeholder: 'e.g. Flatbed, Tanker, Refrigerated...', required: false },
-                // License Details
-                { id: 'license_number', type: 'text', display_mode: 'single', title: 'What is your driver\'s license number?', placeholder: 'License number', required: true, errorMessage: 'Please enter your license number.' },
-                { id: 'license_state', type: 'text', display_mode: 'single', title: 'Which state issued your license?', placeholder: 'e.g. TX, CA, NY', required: true, errorMessage: 'Please enter your licensing state.' },
-                { id: 'license_expiry', type: 'text', display_mode: 'page', title: 'License Expiration Date', placeholder: 'MM/YYYY', required: true },
-                { id: 'dot_medical_expiry', type: 'text', display_mode: 'page', title: 'DOT Medical Card Expiration Date (if applicable)', placeholder: 'MM/YYYY', required: false },
-                { id: 'is_current_license', type: 'options', display_mode: 'single', title: 'Is this your current driver\'s license?', options: ['Yes', 'No'], required: true },
-                { id: 'is_commercial_license', type: 'options', display_mode: 'single', title: 'Is this a commercial driver\'s license (CDL)?', options: ['Yes', 'No'], required: true },
-                { id: 'endorsements', type: 'text', display_mode: 'page', title: 'Endorsements — list any that apply', placeholder: 'e.g. None, Tanker, HazMat, Doubles/Triples, X Endorsement...', required: false },
-                // Military & Employment History
-                { id: 'military', type: 'options', display_mode: 'single', title: 'Were you ever in the military?', options: ['Yes', 'No'], required: true },
-                { id: 'employed_10_years', type: 'options', display_mode: 'single', title: 'Have you been employed, contracted, or attended a company orientation in the last 10 years?', options: ['Yes', 'No'], required: true },
-                { id: 'school_10_years', type: 'options', display_mode: 'single', title: 'Have you attended a school (not related to truck driving) in the last 10 years?', options: ['Yes', 'No'], required: true },
-                { id: 'employment_history', type: 'text', display_mode: 'page', title: 'Briefly describe your employment history for the last 10 years', placeholder: 'Company name, dates, position...', required: false },
+                // Page 1: Personal & General Info (Part 1)
+                { id: 'full_name', page_group: 1, type: 'text', display_mode: 'page', title: 'What is your full name?', placeholder: 'Jane Smith', required: true, errorMessage: 'Please enter your full name.' },
+                { id: 'email', page_group: 1, type: 'email', display_mode: 'page', title: 'What is your email address?', placeholder: 'jane@example.com', required: true, errorMessage: 'Please enter a valid email.' },
+                { id: 'phone', page_group: 1, type: 'tel', display_mode: 'page', title: 'What is your phone number?', placeholder: '(555) 000-0000', required: true, errorMessage: 'Please enter a valid phone number.' },
+                { id: 'position', page_group: 1, type: 'select', display_mode: 'page', title: 'What position are you applying for?', options: ['Company Driver', 'Owner Operator', 'Fleet Owner', 'Driver for Owner Operator'], required: true, errorMessage: 'Please select a position.' },
+                { id: 'owner_operator_fleet', page_group: 1, type: 'options', display_mode: 'page', title: 'If you answered "Owner Operator" or "Fleet Owner" above, select Yes.', options: ['Yes', 'No'], required: true },
+                { id: 'location', page_group: 1, type: 'text', display_mode: 'page', title: 'What location are you applying for?', placeholder: 'City, State', required: false },
+                { id: 'us_eligible', page_group: 1, type: 'options', display_mode: 'page', title: 'Are you legally eligible for employment in the United States?', options: ['Yes', 'No'], required: true },
+                { id: 'currently_employed', page_group: 1, type: 'options', display_mode: 'page', title: 'Are you currently employed?', options: ['Yes', 'No'], required: true },
+
+                // Page 2: General Info (Part 2)
+                { id: 'speaks_english', page_group: 2, type: 'options', display_mode: 'page', title: 'Do you read, write, and speak English?', options: ['Yes', 'No'], required: true },
+                { id: 'worked_before', page_group: 2, type: 'options', display_mode: 'page', title: 'Have you ever worked for this company before?', options: ['Yes', 'No'], required: true },
+                { id: 'twic_card', page_group: 2, type: 'options', display_mode: 'page', title: 'Do you have a current TWIC card?', options: ['Yes', 'No'], required: true },
+                { id: 'other_name', page_group: 2, type: 'options', display_mode: 'page', title: 'Have you ever been known by any other name?', options: ['Yes', 'No'], required: true },
+                { id: 'referral_source', page_group: 2, type: 'select', display_mode: 'page', title: 'How did you hear about us?', options: ['Driver Referral', 'Craigslist', 'Facebook', 'Driver Pulse', 'Newspaper', 'Web', 'Other'], required: false },
+                { id: 'driver_referral_name', page_group: 2, type: 'text', display_mode: 'page', title: 'If "Driver Referral", please enter the driver\'s name', placeholder: 'Driver name...', required: false },
+                { id: 'referral_other', page_group: 2, type: 'text', display_mode: 'page', title: 'If "Other", please explain how you heard about us', placeholder: 'Please explain...', required: false },
+                { id: 'fmcsa_clearinghouse', page_group: 2, type: 'options', display_mode: 'page', title: 'Have you registered for the FMCSA Drug & Alcohol Clearinghouse?', options: ['Yes', 'No'], required: true },
+
+                // Page 3: Driving Experience & License Info (Part 1)
+                { id: 'exp_straight_truck', page_group: 3, type: 'select', display_mode: 'page', title: 'Straight Truck — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+                { id: 'exp_semi_trailer', page_group: 3, type: 'select', display_mode: 'page', title: 'Tractor and Semi-Trailer — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+                { id: 'exp_two_trailers', page_group: 3, type: 'select', display_mode: 'page', title: 'Tractor - Two Trailers — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+                { id: 'exp_other', page_group: 3, type: 'text', display_mode: 'page', title: 'Other equipment experience (if any)', placeholder: 'e.g. Flatbed, Tanker, Refrigerated...', required: false },
+                { id: 'license_number', page_group: 3, type: 'text', display_mode: 'page', title: 'What is your driver\'s license number?', placeholder: 'License number', required: true, errorMessage: 'Please enter your license number.' },
+                { id: 'license_state', page_group: 3, type: 'text', display_mode: 'page', title: 'Which state issued your license?', placeholder: 'e.g. TX, CA, NY', required: true, errorMessage: 'Please enter your licensing state.' },
+                { id: 'license_expiry', page_group: 3, type: 'text', display_mode: 'page', title: 'License Expiration Date', placeholder: 'MM/YYYY', required: true },
+                { id: 'dot_medical_expiry', page_group: 3, type: 'text', display_mode: 'page', title: 'DOT Medical Card Expiration Date (if applicable)', placeholder: 'MM/YYYY', required: false },
+
+                // Page 4: License Info (Part 2) & History
+                { id: 'is_current_license', page_group: 4, type: 'options', display_mode: 'page', title: 'Is this your current driver\'s license?', options: ['Yes', 'No'], required: true },
+                { id: 'is_commercial_license', page_group: 4, type: 'options', display_mode: 'page', title: 'Is this a commercial driver\'s license (CDL)?', options: ['Yes', 'No'], required: true },
+                { id: 'endorsements', page_group: 4, type: 'text', display_mode: 'page', title: 'Endorsements — list any that apply', placeholder: 'e.g. None, Tanker, HazMat, Doubles/Triples, X Endorsement...', required: false },
+                { id: 'military', page_group: 4, type: 'options', display_mode: 'page', title: 'Were you ever in the military?', options: ['Yes', 'No'], required: true },
+                { id: 'employed_10_years', page_group: 4, type: 'options', display_mode: 'page', title: 'Have you been employed, contracted, or attended a company orientation in the last 10 years?', options: ['Yes', 'No'], required: true },
+                { id: 'school_10_years', page_group: 4, type: 'options', display_mode: 'page', title: 'Have you attended a school (not related to truck driving) in the last 10 years?', options: ['Yes', 'No'], required: true },
+                { id: 'employment_history', page_group: 4, type: 'text', display_mode: 'page', title: 'Briefly describe your employment history for the last 10 years', placeholder: 'Company name, dates, position...', required: false },
             ];
         }
 
@@ -108,42 +110,44 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Use fallback config if fetch fails completely
         let config = [
-            // Personal Information
-            { id: 'full_name', type: 'text', display_mode: 'single', title: 'What is your full name?', placeholder: 'Jane Smith', required: true, errorMessage: 'Please enter your full name.' },
-            { id: 'email', type: 'email', display_mode: 'single', title: 'What is your email address?', placeholder: 'jane@example.com', required: true, errorMessage: 'Please enter a valid email.' },
-            { id: 'phone', type: 'tel', display_mode: 'single', title: 'What is your phone number?', placeholder: '(555) 000-0000', required: true, errorMessage: 'Please enter a valid phone number.' },
-            // General Information
-            { id: 'position', type: 'select', display_mode: 'single', title: 'What position are you applying for?', options: ['Company Driver', 'Owner Operator', 'Fleet Owner', 'Driver for Owner Operator'], required: true, errorMessage: 'Please select a position.' },
-            { id: 'owner_operator_fleet', type: 'options', display_mode: 'single', title: 'If you answered "Owner Operator" or "Fleet Owner" above, select Yes.', options: ['Yes', 'No'], required: true },
-            { id: 'location', type: 'text', display_mode: 'single', title: 'What location are you applying for?', placeholder: 'City, State', required: false },
-            { id: 'us_eligible', type: 'options', display_mode: 'single', title: 'Are you legally eligible for employment in the United States?', options: ['Yes', 'No'], required: true },
-            { id: 'currently_employed', type: 'options', display_mode: 'single', title: 'Are you currently employed?', options: ['Yes', 'No'], required: true },
-            { id: 'speaks_english', type: 'options', display_mode: 'single', title: 'Do you read, write, and speak English?', options: ['Yes', 'No'], required: true },
-            { id: 'worked_before', type: 'options', display_mode: 'single', title: 'Have you ever worked for this company before?', options: ['Yes', 'No'], required: true },
-            { id: 'twic_card', type: 'options', display_mode: 'single', title: 'Do you have a current TWIC card?', options: ['Yes', 'No'], required: true },
-            { id: 'other_name', type: 'options', display_mode: 'single', title: 'Have you ever been known by any other name?', options: ['Yes', 'No'], required: true },
-            { id: 'referral_source', type: 'select', display_mode: 'single', title: 'How did you hear about us?', options: ['Driver Referral', 'Craigslist', 'Facebook', 'Driver Pulse', 'Newspaper', 'Web', 'Other'], required: false },
-            { id: 'driver_referral_name', type: 'text', display_mode: 'page', title: 'If "Driver Referral", please enter the driver\'s name', placeholder: 'Driver name...', required: false },
-            { id: 'referral_other', type: 'text', display_mode: 'page', title: 'If "Other", please explain how you heard about us', placeholder: 'Please explain...', required: false },
-            { id: 'fmcsa_clearinghouse', type: 'options', display_mode: 'single', title: 'Have you registered for the FMCSA Drug & Alcohol Clearinghouse?', options: ['Yes', 'No'], required: true },
-            // Driving Experience
-            { id: 'exp_straight_truck', type: 'select', display_mode: 'page', title: 'Straight Truck — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-            { id: 'exp_semi_trailer', type: 'select', display_mode: 'page', title: 'Tractor and Semi-Trailer — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-            { id: 'exp_two_trailers', type: 'select', display_mode: 'page', title: 'Tractor - Two Trailers — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-            { id: 'exp_other', type: 'text', display_mode: 'page', title: 'Other equipment experience (if any)', placeholder: 'e.g. Flatbed, Tanker, Refrigerated...', required: false },
-            // License Details
-            { id: 'license_number', type: 'text', display_mode: 'single', title: 'What is your driver\'s license number?', placeholder: 'License number', required: true, errorMessage: 'Please enter your license number.' },
-            { id: 'license_state', type: 'text', display_mode: 'single', title: 'Which state issued your license?', placeholder: 'e.g. TX, CA, NY', required: true, errorMessage: 'Please enter your licensing state.' },
-            { id: 'license_expiry', type: 'text', display_mode: 'page', title: 'License Expiration Date', placeholder: 'MM/YYYY', required: true },
-            { id: 'dot_medical_expiry', type: 'text', display_mode: 'page', title: 'DOT Medical Card Expiration Date (if applicable)', placeholder: 'MM/YYYY', required: false },
-            { id: 'is_current_license', type: 'options', display_mode: 'single', title: 'Is this your current driver\'s license?', options: ['Yes', 'No'], required: true },
-            { id: 'is_commercial_license', type: 'options', display_mode: 'single', title: 'Is this a commercial driver\'s license (CDL)?', options: ['Yes', 'No'], required: true },
-            { id: 'endorsements', type: 'text', display_mode: 'page', title: 'Endorsements — list any that apply', placeholder: 'e.g. None, Tanker, HazMat, Doubles/Triples, X Endorsement...', required: false },
-            // Military & Employment History
-            { id: 'military', type: 'options', display_mode: 'single', title: 'Were you ever in the military?', options: ['Yes', 'No'], required: true },
-            { id: 'employed_10_years', type: 'options', display_mode: 'single', title: 'Have you been employed, contracted, or attended a company orientation in the last 10 years?', options: ['Yes', 'No'], required: true },
-            { id: 'school_10_years', type: 'options', display_mode: 'single', title: 'Have you attended a school (not related to truck driving) in the last 10 years?', options: ['Yes', 'No'], required: true },
-            { id: 'employment_history', type: 'text', display_mode: 'page', title: 'Briefly describe your employment history for the last 10 years', placeholder: 'Company name, dates, position...', required: false },
+            // Page 1: Personal & General Info (Part 1)
+            { id: 'full_name', page_group: 1, type: 'text', display_mode: 'page', title: 'What is your full name?', placeholder: 'Jane Smith', required: true, errorMessage: 'Please enter your full name.' },
+            { id: 'email', page_group: 1, type: 'email', display_mode: 'page', title: 'What is your email address?', placeholder: 'jane@example.com', required: true, errorMessage: 'Please enter a valid email.' },
+            { id: 'phone', page_group: 1, type: 'tel', display_mode: 'page', title: 'What is your phone number?', placeholder: '(555) 000-0000', required: true, errorMessage: 'Please enter a valid phone number.' },
+            { id: 'position', page_group: 1, type: 'select', display_mode: 'page', title: 'What position are you applying for?', options: ['Company Driver', 'Owner Operator', 'Fleet Owner', 'Driver for Owner Operator'], required: true, errorMessage: 'Please select a position.' },
+            { id: 'owner_operator_fleet', page_group: 1, type: 'options', display_mode: 'page', title: 'If you answered "Owner Operator" or "Fleet Owner" above, select Yes.', options: ['Yes', 'No'], required: true },
+            { id: 'location', page_group: 1, type: 'text', display_mode: 'page', title: 'What location are you applying for?', placeholder: 'City, State', required: false },
+            { id: 'us_eligible', page_group: 1, type: 'options', display_mode: 'page', title: 'Are you legally eligible for employment in the United States?', options: ['Yes', 'No'], required: true },
+            { id: 'currently_employed', page_group: 1, type: 'options', display_mode: 'page', title: 'Are you currently employed?', options: ['Yes', 'No'], required: true },
+
+            // Page 2: General Info (Part 2)
+            { id: 'speaks_english', page_group: 2, type: 'options', display_mode: 'page', title: 'Do you read, write, and speak English?', options: ['Yes', 'No'], required: true },
+            { id: 'worked_before', page_group: 2, type: 'options', display_mode: 'page', title: 'Have you ever worked for this company before?', options: ['Yes', 'No'], required: true },
+            { id: 'twic_card', page_group: 2, type: 'options', display_mode: 'page', title: 'Do you have a current TWIC card?', options: ['Yes', 'No'], required: true },
+            { id: 'other_name', page_group: 2, type: 'options', display_mode: 'page', title: 'Have you ever been known by any other name?', options: ['Yes', 'No'], required: true },
+            { id: 'referral_source', page_group: 2, type: 'select', display_mode: 'page', title: 'How did you hear about us?', options: ['Driver Referral', 'Craigslist', 'Facebook', 'Driver Pulse', 'Newspaper', 'Web', 'Other'], required: false },
+            { id: 'driver_referral_name', page_group: 2, type: 'text', display_mode: 'page', title: 'If "Driver Referral", please enter the driver\'s name', placeholder: 'Driver name...', required: false },
+            { id: 'referral_other', page_group: 2, type: 'text', display_mode: 'page', title: 'If "Other", please explain how you heard about us', placeholder: 'Please explain...', required: false },
+            { id: 'fmcsa_clearinghouse', page_group: 2, type: 'options', display_mode: 'page', title: 'Have you registered for the FMCSA Drug & Alcohol Clearinghouse?', options: ['Yes', 'No'], required: true },
+
+            // Page 3: Driving Experience & License Info (Part 1)
+            { id: 'exp_straight_truck', page_group: 3, type: 'select', display_mode: 'page', title: 'Straight Truck — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+            { id: 'exp_semi_trailer', page_group: 3, type: 'select', display_mode: 'page', title: 'Tractor and Semi-Trailer — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+            { id: 'exp_two_trailers', page_group: 3, type: 'select', display_mode: 'page', title: 'Tractor - Two Trailers — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+            { id: 'exp_other', page_group: 3, type: 'text', display_mode: 'page', title: 'Other equipment experience (if any)', placeholder: 'e.g. Flatbed, Tanker, Refrigerated...', required: false },
+            { id: 'license_number', page_group: 3, type: 'text', display_mode: 'page', title: 'What is your driver\'s license number?', placeholder: 'License number', required: true, errorMessage: 'Please enter your license number.' },
+            { id: 'license_state', page_group: 3, type: 'text', display_mode: 'page', title: 'Which state issued your license?', placeholder: 'e.g. TX, CA, NY', required: true, errorMessage: 'Please enter your licensing state.' },
+            { id: 'license_expiry', page_group: 3, type: 'text', display_mode: 'page', title: 'License Expiration Date', placeholder: 'MM/YYYY', required: true },
+            { id: 'dot_medical_expiry', page_group: 3, type: 'text', display_mode: 'page', title: 'DOT Medical Card Expiration Date (if applicable)', placeholder: 'MM/YYYY', required: false },
+
+            // Page 4: License Info (Part 2) & History
+            { id: 'is_current_license', page_group: 4, type: 'options', display_mode: 'page', title: 'Is this your current driver\'s license?', options: ['Yes', 'No'], required: true },
+            { id: 'is_commercial_license', page_group: 4, type: 'options', display_mode: 'page', title: 'Is this a commercial driver\'s license (CDL)?', options: ['Yes', 'No'], required: true },
+            { id: 'endorsements', page_group: 4, type: 'text', display_mode: 'page', title: 'Endorsements — list any that apply', placeholder: 'e.g. None, Tanker, HazMat, Doubles/Triples, X Endorsement...', required: false },
+            { id: 'military', page_group: 4, type: 'options', display_mode: 'page', title: 'Were you ever in the military?', options: ['Yes', 'No'], required: true },
+            { id: 'employed_10_years', page_group: 4, type: 'options', display_mode: 'page', title: 'Have you been employed, contracted, or attended a company orientation in the last 10 years?', options: ['Yes', 'No'], required: true },
+            { id: 'school_10_years', page_group: 4, type: 'options', display_mode: 'page', title: 'Have you attended a school (not related to truck driving) in the last 10 years?', options: ['Yes', 'No'], required: true },
+            { id: 'employment_history', page_group: 4, type: 'text', display_mode: 'page', title: 'Briefly describe your employment history for the last 10 years', placeholder: 'Company name, dates, position...', required: false },
         ];
 
         const rawFlow = [
@@ -173,6 +177,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 function buildSegments(flow) {
     const segments = [];
     let pageBuffer = [];
+    let currentPageGroup = null;
 
     const flushPage = () => {
         if (pageBuffer.length > 0) {
@@ -185,16 +190,24 @@ function buildSegments(flow) {
         if (step.type === 'welcome') {
             flushPage();
             segments.push({ type: 'welcome', steps: [step] });
+            currentPageGroup = null;
         } else if (step.type === 'success') {
             flushPage();
             segments.push({ type: 'success', steps: [step] });
+            currentPageGroup = null;
         } else {
             const mode = step.display_mode || 'single';
+            const group = step.page_group || 'default';
             if (mode === 'page') {
+                if (pageBuffer.length > 0 && currentPageGroup !== group) {
+                    flushPage();
+                }
                 pageBuffer.push(step);
+                currentPageGroup = group;
             } else {
                 flushPage();
                 segments.push({ type: 'single', steps: [step] });
+                currentPageGroup = null;
             }
         }
     });

@@ -521,11 +521,21 @@ h3,
   grid-template-columns: 1fr;
   gap: 3rem;
   margin-bottom: 3rem;
+  text-align: center;
+}
+
+.footer-cols>div:first-child p {
+  margin: 0 auto;
 }
 
 @media (min-width: 768px) {
   .footer-cols {
     grid-template-columns: 1fr 1fr 1fr;
+    text-align: left;
+  }
+
+  .footer-cols>div:first-child p {
+    margin: 0;
   }
 }
 
@@ -556,8 +566,15 @@ h3,
 .footer-contact li {
   display: flex;
   align-items: center;
+  justify-content: center;
   gap: 0.75rem;
   margin-bottom: 1rem;
+}
+
+@media (min-width: 768px) {
+  .footer-contact li {
+    justify-content: flex-start;
+  }
 }
 
 .footer-contact .icon-box {
@@ -689,7 +706,7 @@ h3,
 
 .hero-logo-wrap img {
   position: relative;
-  height: 5rem;
+  height: 11rem;
   width: auto;
   transition: transform 0.5s;
 }
