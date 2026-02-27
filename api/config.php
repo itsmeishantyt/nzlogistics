@@ -13,6 +13,10 @@ define('DB_PASS', 'Nzlogistics123#$'); // From hPanel → Databases
 // ── Admin password ────────────────────────────────
 define('ADMIN_PASSWORD', 'admin123');
 
+// ── Email Notifications (Resend API) ──────────────
+define('RESEND_API_KEY', 're_jSCBfK4y_N2iNcEJrWcwLfAodxX6qzBAs');
+define('ADMIN_EMAIL', 'nzlogistics9@gmail.com');
+
 // ── Session duration (hours) ──────────────────────
 define('SESSION_HOURS', 24);
 
@@ -83,4 +87,32 @@ function requireAdmin(): void {
     if (!$stmt->fetch()) {
         jsonError('Unauthorized — invalid or expired token', 401);
     }
+}
+
+// ── Send Email via Resend ─────────────────────────
+function sendResendEmail(string $to, string $subject, string $htmlBody): void {
+    if (empty(RESEND_API_KEY)) return;
+
+    $ch = curl_init('https://api.resend.com/emails');
+    
+    $payload = json_encode([
+        'from'    => 'N&Z Logistics Notifications <onboarding@resend.dev>',
+        'to'      => [$to],
+        'subject' => $subject,
+        'html'    => $htmlBody
+    ]);
+
+    curl_setopt($ch, CURLOPT_HTTPHEADER, [
+        'Authorization: Bearer ' . RESEND_API_KEY,
+        'Content-Type: application/json'
+    ]);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $payload);
+    
+    $result = curl_exec($ch);
+    if (curl_errno($ch)) {
+        error_log('Resend cURL error: ' . curl_error($ch));
+    }
+    curl_close($ch);
 }

@@ -56,10 +56,24 @@ try {
     $stmt = $db->prepare('INSERT INTO applications (data, status) VALUES (?, ?)');
     $stmt->execute([json_encode($body, JSON_UNESCAPED_UNICODE), 'pending']);
 
+    $insertId = $db->lastInsertId();
+
+    // Trigger Email Notification
+    $applicantName = trim(($body['first_name'] ?? '') . ' ' . ($body['last_name'] ?? ''));
+    if ($applicantName === '') $applicantName = 'A new applicant';
+    $position = $body['position'] ?? 'Unknown Position';
+
+    $htmlBody = "<h2>New Application Received</h2>
+<p><strong>Applicant:</strong> " . htmlspecialchars($applicantName) . "</p>
+<p><strong>Position:</strong> " . htmlspecialchars($position) . "</p>
+<p>Log in to your Admin Dashboard to view their full details, attached licenses, and download their resume.</p>";
+
+    sendResendEmail(ADMIN_EMAIL, "New Application Notification — $applicantName", $htmlBody);
+
     jsonResponse([
         'success' => true,
         'message' => 'Application submitted successfully',
-        'id'      => $db->lastInsertId(),
+        'id'      => $insertId,
     ], 201);
 } catch (PDOException $e) {
     error_log('Submit error: ' . $e->getMessage());

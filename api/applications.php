@@ -78,4 +78,31 @@ if ($method === 'PATCH') {
     exit;
 }
 
+if ($method === 'DELETE') {
+    requireAdmin();
+
+    $body = getJsonBody();
+    $id = $body['id'] ?? null;
+
+    if (!$id) {
+        jsonError('Invalid id', 400);
+    }
+
+    try {
+        $db = getDB();
+        $stmt = $db->prepare('DELETE FROM applications WHERE id = ?');
+        $stmt->execute([$id]);
+
+        if ($stmt->rowCount() === 0) {
+            jsonError('Application not found', 404);
+        }
+
+        jsonResponse(['success' => true]);
+    } catch (PDOException $e) {
+        error_log('Applications DELETE error: ' . $e->getMessage());
+        jsonError('Failed to delete application', 500);
+    }
+    exit;
+}
+
 jsonError('Method not allowed', 405);
