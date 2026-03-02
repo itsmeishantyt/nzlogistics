@@ -447,6 +447,16 @@
                     </svg>
                     Form Builder
                 </a>
+                <button class="btn btn-outline" style="color:var(--text)" onclick="openChangePassword()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 2v6h-6"></path>
+                        <path d="M3 12a9 9 0 0 1 15-6.7L21 8"></path>
+                        <path d="M3 22v-6h6"></path>
+                        <path d="M21 12a9 9 0 0 1-15 6.7L3 16"></path>
+                    </svg>
+                    Settings
+                </button>
                 <button class="btn btn-outline" onclick="loadApplications()">
                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
                         stroke-linecap="round" stroke-linejoin="round">
@@ -546,6 +556,34 @@
                 </div>
             </div>
             <div class="modal-fields" id="modal-fields"></div>
+        </div>
+    </div>
+
+    <!-- ═══ Change Password Modal ═══ -->
+    <div class="modal-overlay" id="password-modal">
+        <div class="modal" style="max-width:24rem;">
+            <button class="close-btn" onclick="closeChangePassword()" style="top:1.5rem;">✕</button>
+            <h2 style="margin-bottom:1.5rem">Change Admin Password</h2>
+            <div style="display:flex;flex-direction:column;gap:1rem;">
+                <div>
+                    <label
+                        style="font-size:0.75rem;color:var(--muted);font-weight:600;display:block;margin-bottom:0.25rem;">New
+                        Password</label>
+                    <input type="password" id="new-password"
+                        style="width:100%;padding:0.625rem 0.875rem;background:var(--surface2);border:1px solid var(--border);border-radius:0.375rem;color:var(--text);font-size:0.875rem;"
+                        placeholder="Enter new password">
+                </div>
+                <div>
+                    <label
+                        style="font-size:0.75rem;color:var(--muted);font-weight:600;display:block;margin-bottom:0.25rem;">Confirm
+                        Password</label>
+                    <input type="password" id="confirm-password"
+                        style="width:100%;padding:0.625rem 0.875rem;background:var(--surface2);border:1px solid var(--border);border-radius:0.375rem;color:var(--text);font-size:0.875rem;"
+                        placeholder="Confirm new password">
+                </div>
+                <button class="btn btn-white" style="width:100%;justify-content:center;margin-top:0.5rem;"
+                    onclick="submitChangePassword()">Change Password</button>
+            </div>
         </div>
     </div>
 
@@ -700,7 +738,11 @@
             // Show all data fields
             if (app.data && typeof app.data === 'object') {
                 for (const [key, value] of Object.entries(app.data)) {
-                    html += `<div class="modal-field"><div class="mf-label">${esc(key)}</div><div class="mf-value">${esc(String(value))}</div></div>`;
+                    let valHtml = esc(String(value));
+                    if (typeof value === 'string' && value.startsWith('/uploads/')) {
+                        valHtml = `<a href="..${esc(value)}" target="_blank" style="color:var(--info);text-decoration:underline;font-weight:500;">View Uploaded File</a>`;
+                    }
+                    html += `<div class="modal-field"><div class="mf-label">${esc(key)}</div><div class="mf-value">${valHtml}</div></div>`;
                 }
             }
 
@@ -716,6 +758,57 @@
         document.getElementById('detail-modal').addEventListener('click', (e) => {
             if (e.target === e.currentTarget) closeDetail();
         });
+
+        // ── Change Password ────────────────────
+        function openChangePassword() {
+            document.getElementById('new-password').value = '';
+            document.getElementById('confirm-password').value = '';
+            document.getElementById('password-modal').classList.add('open');
+        }
+
+        function closeChangePassword() {
+            document.getElementById('password-modal').classList.remove('open');
+        }
+
+        document.getElementById('password-modal').addEventListener('click', (e) => {
+            if (e.target === e.currentTarget) closeChangePassword();
+        });
+
+        async function submitChangePassword() {
+            const newPass = document.getElementById('new-password').value;
+            const confirmPass = document.getElementById('confirm-password').value;
+
+            if (newPass.length < 6) {
+                showToast('Password must be at least 6 characters', 'error');
+                return;
+            }
+            if (newPass !== confirmPass) {
+                showToast('Passwords do not match', 'error');
+                return;
+            }
+
+            const token = localStorage.getItem('admin_token');
+            try {
+                const res = await fetch(`${API_BASE}/change-password.php`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({ new_password: newPass })
+                });
+
+                const data = await res.json();
+                if (res.ok) {
+                    showToast('Password changed successfully!', 'success');
+                    closeChangePassword();
+                } else {
+                    showToast(data.error || 'Failed to change password', 'error');
+                }
+            } catch (err) {
+                showToast('Network error', 'error');
+            }
+        }
 
         // ── Helpers ────────────────────────────
         function formatDate(dateStr) {

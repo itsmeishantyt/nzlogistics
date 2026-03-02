@@ -648,6 +648,9 @@
               <option value="tel" ${q.type === 'tel' ? 'selected' : ''}>Phone Number</option>
               <option value="number" ${q.type === 'number' ? 'selected' : ''}>Number</option>
               <option value="options" ${q.type === 'options' ? 'selected' : ''}>Multiple Choice</option>
+              <option value="select" ${q.type === 'select' ? 'selected' : ''}>Dropdown (Select)</option>
+              <option value="file" ${q.type === 'file' ? 'selected' : ''}>File Upload</option>
+              <option value="date" ${q.type === 'date' ? 'selected' : ''}>Date</option>
             </select>
           </div>
           <div class="field">
@@ -658,7 +661,7 @@
             </select>
             <span class="field-hint">Consecutive "Page" questions are grouped together.</span>
           </div>
-          ${q.type === 'options' ? `
+          ${(q.type === 'options' || q.type === 'select') ? `
           <div class="field span-2">
             <label>Options (comma separated)</label>
             <input type="text" value="${esc((q.options || []).join(', '))}" onchange="updateOptions(${i},this.value)" placeholder="Option 1, Option 2, Option 3">

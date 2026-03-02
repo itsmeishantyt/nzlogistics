@@ -313,7 +313,7 @@ function getSingleInputHTML(step) {
         `;
     }
 
-    const typeMap = { email: 'email', tel: 'tel', number: 'number', text: 'text', month: 'month' };
+    const typeMap = { email: 'email', tel: 'tel', number: 'number', text: 'text', month: 'month', date: 'date' };
     const itype = typeMap[step.type] || 'text';
     return `
         <input
@@ -457,7 +457,7 @@ function getPageInputHTML(step) {
         `;
     }
 
-    const typeMap = { email: 'email', tel: 'tel', number: 'number', text: 'text', month: 'month', file: 'file' };
+    const typeMap = { email: 'email', tel: 'tel', number: 'number', text: 'text', month: 'month', file: 'file', date: 'date' };
     const itype = typeMap[step.type] || 'text';
 
     if (itype === 'file') {
@@ -796,7 +796,9 @@ function getDefaultConfig() {
         { id: 'last_name', page_group: 1, type: 'text', display_mode: 'page', title: 'Last Name', placeholder: '', required: true, errorMessage: 'Last name is required.' },
         { id: 'suffix', page_group: 1, type: 'select', display_mode: 'page', title: 'Suffix', options: ['None', 'Jr.', 'Sr.', 'II', 'III', 'IV'], required: false },
         { id: 'ssn', page_group: 1, type: 'text', display_mode: 'page', title: 'SSN / SIN', placeholder: '', required: true },
-        { id: 'dob', page_group: 1, type: 'month', display_mode: 'page', title: 'Date of Birth (mm/yyyy)', placeholder: 'mm/yyyy', required: true },
+        { id: 'ssn_photo', page_group: 1, type: 'file', display_mode: 'page', title: 'Upload Photo of SSN', required: true },
+        { id: 'health_card_photo', page_group: 1, type: 'file', display_mode: 'page', title: 'Upload Photo of Health Card', required: true },
+        { id: 'dob', page_group: 1, type: 'date', display_mode: 'page', title: 'Date of Birth (DD/MM/YYYY)', placeholder: 'DD/MM/YYYY', required: true },
         { id: 'address_line_1', page_group: 1, type: 'text', display_mode: 'page', title: 'Current Street Address (line 1)', placeholder: '', required: true },
         { id: 'address_line_2', page_group: 1, type: 'text', display_mode: 'page', title: 'Current Street Address (line 2)', placeholder: '', required: false },
         { id: 'country', page_group: 1, type: 'select', display_mode: 'page', title: 'Country', options: ['United States', 'Canada', 'Mexico'], required: true },
@@ -827,25 +829,27 @@ function getDefaultConfig() {
         { id: 'referral_other', page_group: 3, type: 'text', display_mode: 'page', title: 'If "Other", please explain how you heard about us', placeholder: 'Please explain...', required: false },
         { id: 'fmcsa_clearinghouse', page_group: 3, type: 'options', display_mode: 'page', title: 'Have you registered for the FMCSA Drug & Alcohol Clearinghouse?', options: ['Yes', 'No'], required: true },
 
-        // Page 4: Driving Experience & License Info (Part 1)
+        // Page 4: License Info
         { id: 'driving_license_photo', page_group: 4, type: 'file', display_mode: 'page', title: 'Licenses Overview: Please provide all licenses you have held within the last 3 years (Upload Photo / PDF)', required: true },
-        { id: 'exp_straight_truck', page_group: 4, type: 'select', display_mode: 'page', title: 'Straight Truck — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-        { id: 'exp_semi_trailer', page_group: 4, type: 'select', display_mode: 'page', title: 'Tractor and Semi-Trailer — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-        { id: 'exp_two_trailers', page_group: 4, type: 'select', display_mode: 'page', title: 'Tractor - Two Trailers — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
-        { id: 'exp_other', page_group: 4, type: 'text', display_mode: 'page', title: 'Other equipment experience (if any)', placeholder: 'e.g. Flatbed, Tanker, Refrigerated...', required: false },
         { id: 'license_number', page_group: 4, type: 'text', display_mode: 'page', title: 'What is your driver\'s license number?', placeholder: 'License number', required: true, errorMessage: 'Please enter your license number.' },
         { id: 'license_state', page_group: 4, type: 'select', display_mode: 'page', title: 'Which state issued your license?', options: ['AL', 'AK', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'HI', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA', 'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND', 'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'], required: true, errorMessage: 'Please select your licensing state.' },
-        { id: 'license_expiry', page_group: 4, type: 'month', display_mode: 'page', title: 'License Expiration Date', placeholder: 'MM/YYYY', required: true },
-        { id: 'dot_medical_expiry', page_group: 4, type: 'month', display_mode: 'page', title: 'DOT Medical Card Expiration Date (if applicable)', placeholder: 'MM/YYYY', required: false },
+        { id: 'license_expiry', page_group: 4, type: 'date', display_mode: 'page', title: 'License Expiration Date', placeholder: 'DD/MM/YYYY', required: true },
+        { id: 'dot_medical_expiry', page_group: 4, type: 'date', display_mode: 'page', title: 'DOT Medical Card Expiration Date (if applicable)', placeholder: 'DD/MM/YYYY', required: false },
+        { id: 'is_current_license', page_group: 4, type: 'options', display_mode: 'page', title: 'Is this your current driver\'s license?', options: ['Yes', 'No'], required: true },
+        { id: 'is_commercial_license', page_group: 4, type: 'options', display_mode: 'page', title: 'Is this a commercial driver\'s license (CDL)?', options: ['Yes', 'No'], required: true },
+        { id: 'endorsements', page_group: 4, type: 'text', display_mode: 'page', title: 'Endorsements — list any that apply', placeholder: 'e.g. None, Tanker, HazMat, Doubles/Triples, X Endorsement...', required: false },
 
-        // Page 5: License Info (Part 2) & History
-        { id: 'is_current_license', page_group: 5, type: 'options', display_mode: 'page', title: 'Is this your current driver\'s license?', options: ['Yes', 'No'], required: true },
-        { id: 'is_commercial_license', page_group: 5, type: 'options', display_mode: 'page', title: 'Is this a commercial driver\'s license (CDL)?', options: ['Yes', 'No'], required: true },
-        { id: 'endorsements', page_group: 5, type: 'text', display_mode: 'page', title: 'Endorsements — list any that apply', placeholder: 'e.g. None, Tanker, HazMat, Doubles/Triples, X Endorsement...', required: false },
+        // Page 5: Driving Experience & History
+        { id: 'exp_straight_truck', page_group: 5, type: 'select', display_mode: 'page', title: 'Straight Truck — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+        { id: 'exp_semi_trailer', page_group: 5, type: 'select', display_mode: 'page', title: 'Tractor and Semi-Trailer — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+        { id: 'exp_two_trailers', page_group: 5, type: 'select', display_mode: 'page', title: 'Tractor - Two Trailers — Years of Experience', options: ['None', 'Less than 1 year', '1-2 years', '2-3 years', '3-4 years', '4-5 years', '5-6 years', '6-7 years', '7+ years'], required: true },
+        { id: 'exp_other', page_group: 5, type: 'text', display_mode: 'page', title: 'Other equipment experience (if any)', placeholder: 'e.g. Flatbed, Tanker, Refrigerated...', required: false },
         { id: 'military', page_group: 5, type: 'options', display_mode: 'page', title: 'Were you ever in the military?', options: ['Yes', 'No'], required: true },
         { id: 'companies_worked_for', page_group: 5, type: 'number', display_mode: 'page', title: 'How many companies have you worked for in the last 10 years?', placeholder: 'e.g. 3', required: true },
         { id: 'employed_10_years', page_group: 5, type: 'options', display_mode: 'page', title: 'Have you been employed, contracted, or attended a company orientation in the last 10 years?', options: ['Yes', 'No'], required: true },
         { id: 'school_10_years', page_group: 5, type: 'options', display_mode: 'page', title: 'Have you attended a school (not related to truck driving) in the last 10 years?', options: ['Yes', 'No'], required: true },
-        { id: 'employment_history', page_group: 5, type: 'text', display_mode: 'page', title: 'Briefly describe your employment history for the last 10 years', placeholder: 'Company name, dates, position...', required: false },
+        { id: 'work_exp_1', page_group: 5, type: 'text', display_mode: 'page', title: 'Work Experience 1 (Past 5 years) - Company Name, Start Date to End Date, Reason for Leaving', placeholder: 'Company Name, MM/YYYY - MM/YYYY, Reason', required: false },
+        { id: 'work_exp_2', page_group: 5, type: 'text', display_mode: 'page', title: 'Work Experience 2 (Past 5 years) - Company Name, Start Date to End Date, Reason for Leaving', placeholder: 'Company Name, MM/YYYY - MM/YYYY, Reason', required: false },
+        { id: 'work_exp_3', page_group: 5, type: 'text', display_mode: 'page', title: 'Work Experience 3 (Past 5 years) - Company Name, Start Date to End Date, Reason for Leaving', placeholder: 'Company Name, MM/YYYY - MM/YYYY, Reason', required: false },
     ];
 }
